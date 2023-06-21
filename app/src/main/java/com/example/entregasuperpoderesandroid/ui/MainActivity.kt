@@ -21,7 +21,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             EntregaSuperPoderesAndroidTheme {
-                NavigationGraph(charactersViewModel = superHeroListViewModel, charactersDetailViewModel = superHeroDetailViewModel)
+                NavigationGraph(superHeroListViewModel, superHeroDetailViewModel)
             }
         }
     }

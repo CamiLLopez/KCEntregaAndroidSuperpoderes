@@ -11,7 +11,7 @@ interface IMarvelAPI {
 
     @GET("v1/public/characters")
     suspend fun getCharacteres(@Query("apikey") apiKey: String,
-                               @Query("ts") ts: Int = 1,
+                               @Query("ts") ts: String,
                                @Query("hash") hashMarvel: String,
                                @Query("orderBy") order: String = "name"): GetCharacterResponse
 
@@ -20,7 +20,7 @@ interface IMarvelAPI {
     @GET("/v1/public/characters/{characterId}/comics")
     suspend fun getCharactersComics(@Path("characterId") characterId: Int,
                                     @Query("apikey") apiKey: String,
-                                    @Query("ts") ts: Int = 1,
+                                    @Query("ts") ts: String,
                                     @Query("hash") hashMarvel: String,
                                     @Query("orderBy") order: String = "onsaleDate"): GetCharacterComicsResponse
 
@@ -28,7 +28,7 @@ interface IMarvelAPI {
     @GET("/v1/public/characters/{characterId}/series")
     suspend fun getCharactersSeries(@Path("characterId") characterId: Int,
                                     @Query("apikey") apiKey: String,
-                                    @Query("ts") ts: Int = 1,
+                                    @Query("ts") ts: String,
                                     @Query("hash") hashMarvel: String,
                                     @Query("orderBy") order: String = "startYear"): GetCharacterSeriesResponse
 }

@@ -1,5 +1,6 @@
 package com.example.entregasuperpoderesandroid.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -11,8 +12,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.sharp.FavoriteBorder
 import androidx.compose.material3.Card
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -50,14 +51,14 @@ fun SuperHeroCharacterListScreen(viewModel: CharactersViewModel, onCharacterClic
 
     SuperHeroCharacterListScreenContent(state){ hero->
         onCharacterClick(hero.id)
-
+        viewModel.insertSuperhero(hero)
     }
-
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SuperHeroCharacterListScreenContent(characters: List<SuperHeroCharacter>, onSuperHeroListClicked: (SuperHeroCharacter) ->Unit) {
+fun SuperHeroCharacterListScreenContent(characters: List<SuperHeroCharacter>,
+                                        onSuperHeroListClicked: (SuperHeroCharacter) ->Unit) {
 
     val scaffoldS = rememberScaffoldState()
 
@@ -118,22 +119,31 @@ fun SuperHeroItem(hero: SuperHeroCharacter, modifier: Modifier = Modifier, onHer
                 color = Color.White,
                 modifier = Modifier
                     .padding(8.dp))
-            Icon(imageVector = Icons.Sharp.FavoriteBorder,
-                tint = RedWine,
-                contentDescription = "Favorite Icon",
-                modifier = Modifier
-                    .padding(8.dp)
-                    .size(35.dp)
-            )
+            if(hero.favorite){
+                Icon(imageVector = Icons.Filled.Favorite,
+                    tint = RedWine,
+                    contentDescription = "Favorite Icon",
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .size(35.dp)
+                )
+            }else{
+                Icon(imageVector = Icons.Sharp.FavoriteBorder,
+                    tint = RedWine,
+                    contentDescription = "Favorite Icon",
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .size(35.dp)
+                )
+            }
         }
     }
-
 }
 
 @Preview
 @Composable
 fun SuperHeroItem_Preview() {
-    SuperHeroItem(SuperHeroCharacter(123123, "Goku", "adfgadfg", "adgdf")){
+    SuperHeroItem(SuperHeroCharacter(123123, "Goku", "adfgadfg", "adgdf", true)){
 
     }
 }

@@ -6,6 +6,10 @@ plugins {
     id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
     id "kotlin-kapt"
 }
+Properties properties = new Properties()
+if (project.rootProject.file('local.properties').canRead()) {
+    properties.load(project.rootProject.file("local.properties").newDataInputStream())
+}
 
 android {
     namespace 'com.example.entregasuperpoderesandroid'
@@ -22,6 +26,10 @@ android {
         vectorDrawables {
             useSupportLibrary true
         }
+
+        buildConfigField 'String', 'HASH', properties.getProperty('HASH', '"2c853d14267c2faa1b5546749905dae2"')
+        buildConfigField 'String', 'API_KEY_MARVEL', properties.getProperty('API_KEY_MARVEL', '"97057c98fd5e4ae4b4a114cbdcfb170a"')
+        buildConfigField 'String', 'TS', properties.getProperty('TS', '"1"')
     }
 
     buildTypes {
@@ -39,6 +47,7 @@ android {
     }
     buildFeatures {
         compose true
+        buildConfig true
     }
     composeOptions {
         kotlinCompilerExtensionVersion '1.4.3'
@@ -66,8 +75,7 @@ dependencies {
     implementation 'androidx.compose.material3:material3'
     implementation 'androidx.compose.material:material:1.4.3'
     implementation "androidx.compose.material:material-icons-extended:1.4.3"
-    implementation 'com.squareup.picasso:picasso:2.8'
-
+    implementation 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin:secrets-gradle-plugin:2.0.1'
 
 
     // Networking

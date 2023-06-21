@@ -51,7 +51,8 @@ import com.example.entregasuperpoderesandroid.ui.theme.Rose
 import com.example.entregasuperpoderesandroid.ui.viewModels.CharacterDetailViewModel
 
 @Composable
-fun SuperHeroCharacterDetailScreen(viewModel: CharacterDetailViewModel, characterID: Int) {
+fun SuperHeroCharacterDetailScreen(viewModel: CharacterDetailViewModel,
+                                   characterID: Int, onFavClicked: (Boolean) -> Unit = {_->}) {
 
     val hero by viewModel.hero.collectAsState()
     val series by viewModel.series.collectAsState()
@@ -62,10 +63,8 @@ fun SuperHeroCharacterDetailScreen(viewModel: CharacterDetailViewModel, characte
         viewModel.getComicsByHero(characterID)
         viewModel.getSeriesByHero(characterID)
     }
-    hero?.let { SuperHeroCharacterDetailContent(it, series, comics) }
+    hero?.let { SuperHeroCharacterDetailContent(it, series, comics)}
 }
-
-
 @Composable
 fun SuperHeroCharacterDetailContent(hero: SuperHeroCharacter, series: List<Serie>, comics: List<Comic>) {
 
@@ -77,7 +76,7 @@ fun SuperHeroCharacterDetailContent(hero: SuperHeroCharacter, series: List<Serie
 fun SuperHeroCharacterDetailContent_Preview() {
     SuperHeroCharacterDetailContent(
         SuperHeroCharacter(123, "Capitana Marvel",
-stringResource(R.string.lorem_impsu), ""),
+stringResource(R.string.lorem_impsu), "", true),
         listOf(Serie(123, "Algo", stringResource(R.string.lorem_impsu), 2020, 2021, "", )),
         listOf(Comic(23, "Otra cosa", stringResource(R.string.lorem_impsu), "")))
 }
@@ -88,10 +87,9 @@ fun GeneralInformationView(hero: SuperHeroCharacter, series: List<Serie>, comics
    Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
 
        HeadlineComponent(hero)
-       FavButton(true)
+       FavButton(hero.favorite)
        hero.description?.let { DescriptionModule(it) }
        TabsForSeriesComics(series, comics)
-
     }
 }
 
@@ -99,7 +97,7 @@ fun GeneralInformationView(hero: SuperHeroCharacter, series: List<Serie>, comics
 @Composable
 fun GeneralInformationView_Preview() {
     GeneralInformationView(
-        SuperHeroCharacter(123, "Capitana Marvel", stringResource(R.string.lorem_impsu), ""),
+        SuperHeroCharacter(123, "Capitana Marvel", stringResource(R.string.lorem_impsu), "", true),
         listOf(Serie(123, "Algo", "No", 2020, 2021, "", )),
         listOf(Comic(23, "Otra cosa", "NO", "")))
 }
@@ -133,7 +131,7 @@ fun HeadlineComponent(hero: SuperHeroCharacter, modifier: Modifier = Modifier) {
 @Preview(showBackground = true)
 @Composable
 fun HeadlineComponent_Preview() {
-    HeadlineComponent(SuperHeroCharacter(123, "Capitana Marvel", stringResource(R.string.lorem_impsu), ""))
+    HeadlineComponent(SuperHeroCharacter(123, "Capitana Marvel", stringResource(R.string.lorem_impsu), "", true))
 }
 
 @Composable
@@ -157,7 +155,6 @@ fun DescriptionModule(heroDescription: String) {
 fun DescriptionModule_Preview() {
     DescriptionModule(stringResource(R.string.lorem_impsu))
 }
-
 
 @Composable
 fun TabsForSeriesComics(series: List<Serie>, comics: List<Comic>) {
@@ -289,6 +286,7 @@ fun FavButton(favStatus: Boolean) {
         contentColor = RedWine,
         shape = CircleShape,
         onClick = {
+
         },
     ) {
         if (favStatus){

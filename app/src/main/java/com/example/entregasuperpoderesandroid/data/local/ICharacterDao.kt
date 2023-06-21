@@ -6,13 +6,14 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.entregasuperpoderesandroid.data.local.model.LocalCharacter
+import kotlinx.coroutines.flow.Flow
 
 
 @Dao
 interface ICharacterDao {
 
     @Query("SELECT * FROM character")
-    suspend fun getAll(): List<LocalCharacter>
+    fun getAll(): Flow<List<LocalCharacter>>
 
     @Query("SELECT * FROM character WHERE character.id==:idFragment")
     suspend fun getCharacterByID(idFragment: Int): LocalCharacter

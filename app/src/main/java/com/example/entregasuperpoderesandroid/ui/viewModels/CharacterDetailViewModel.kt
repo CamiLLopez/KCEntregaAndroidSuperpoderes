@@ -21,7 +21,6 @@ class CharacterDetailViewModel @Inject constructor(private val repository: Repos
     private val _comics = MutableStateFlow<List<Comic>>(emptyList())
     val comics: StateFlow<List<Comic>> get() = _comics
 
-
     private val _series = MutableStateFlow<List<Serie>>(emptyList())
     val series: StateFlow<List<Serie>> get() = _series
 

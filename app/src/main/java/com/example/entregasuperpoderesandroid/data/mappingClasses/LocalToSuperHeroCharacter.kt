@@ -6,11 +6,11 @@ import javax.inject.Inject
 
 class LocalToSuperHeroCharacter @Inject constructor() {
 
-    fun mapLocalToSuperHeroCharacter(localCharacters: List<LocalCharacter>): List<SuperHeroCharacter>{
+    fun mapLocalToSuperHeroCharacters(localCharacters: List<LocalCharacter>): List<SuperHeroCharacter>{
         return localCharacters.map { mapLocalToSuperHeroCharacter(it) }
     }
 
      fun mapLocalToSuperHeroCharacter(localCharacter: LocalCharacter) : SuperHeroCharacter {
-        return SuperHeroCharacter(localCharacter.id, localCharacter.name, localCharacter.description, localCharacter.photo )
+        return SuperHeroCharacter(localCharacter.id, localCharacter.name, localCharacter.description, localCharacter.photo, localCharacter.favorite)
     }
 }

@@ -1,14 +1,13 @@
 package com.example.entregasuperpoderesandroid.data.local
 
-import androidx.compose.runtime.remember
 import com.example.entregasuperpoderesandroid.data.local.model.LocalCharacter
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class LocalDataSourceImpl @Inject constructor(private val dao: ICharacterDao): ILocalDataSource {
-    override suspend fun getCharacters(): List<LocalCharacter> {
+    override suspend fun getCharacters(): Flow<List<LocalCharacter>> {
         return dao.getAll()
     }
-
     override suspend fun getCharacter(characterID: Int): LocalCharacter {
         return dao.getCharacterByID(characterID)
     }
@@ -18,10 +17,11 @@ class LocalDataSourceImpl @Inject constructor(private val dao: ICharacterDao): I
     }
 
     override suspend fun insertCharacter(localCharacter: LocalCharacter) {
-        dao.insertAllList(listOf(localCharacter))
+        dao.insertAllVararg(localCharacter)
     }
 
-    override suspend fun insertCharacters(localCharacter: List<LocalCharacter>) {
-       dao.insertAllList(localCharacter)
+    override suspend fun insertCharacters(localCharacters: List<LocalCharacter>) {
+       dao.insertAllList(localCharacters)
     }
 }
+

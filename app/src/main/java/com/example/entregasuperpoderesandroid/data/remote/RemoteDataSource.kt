@@ -6,7 +6,6 @@ import com.example.entregasuperpoderesandroid.data.remote.response.GetCharacterS
 
 interface RemoteDataSource {
 
-
     suspend fun getHeros(): GetCharacterResponse
 
     suspend fun getSeriesByHero(characterID: Int): GetCharacterSeriesResponse
