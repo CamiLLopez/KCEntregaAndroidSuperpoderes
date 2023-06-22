@@ -37,7 +37,6 @@ class CharacterDetailViewModel @Inject constructor(private val repository: Repos
                 _comics.update { result }
             }
         }
-
     }
 
     fun getSeriesByHero(heroID: Int){

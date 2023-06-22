@@ -121,7 +121,7 @@ fun SuperHeroItem(hero: SuperHeroCharacter, modifier: Modifier = Modifier, onHer
             if(hero.favorite){
                 Icon(imageVector = Icons.Filled.Favorite,
                     tint = RedWine,
-                    contentDescription = "Favorite Icon",
+                    contentDescription = stringResource(R.string.favorite_icon),
                     modifier = Modifier
                         .padding(8.dp)
                         .size(35.dp)
@@ -129,7 +129,7 @@ fun SuperHeroItem(hero: SuperHeroCharacter, modifier: Modifier = Modifier, onHer
             }else{
                 Icon(imageVector = Icons.Sharp.FavoriteBorder,
                     tint = RedWine,
-                    contentDescription = "Favorite Icon",
+                    contentDescription = stringResource(R.string.no_favorite_icon),
                     modifier = Modifier
                         .padding(8.dp)
                         .size(35.dp)
