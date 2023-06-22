@@ -15,8 +15,17 @@ class RemoteToSerie @Inject constructor() {
     }
 
     private fun mapGetSerieResponse(getCharacterSerieResponse: ResultsSeries) : Serie {
-        return  Serie(getCharacterSerieResponse.id, getCharacterSerieResponse.title,
-            getCharacterSerieResponse.description, getCharacterSerieResponse.startYear,
-            getCharacterSerieResponse.endYear, getCharacterSerieResponse.thumbnail.path + "." + getCharacterSerieResponse.thumbnail.extension)
+
+        val storyNames = getCharacterSerieResponse.stories.items.map{ item ->
+            item.name
+        }.toString()
+
+        return  Serie(getCharacterSerieResponse.id,
+            getCharacterSerieResponse.title,
+            getCharacterSerieResponse.description,
+            getCharacterSerieResponse.startYear,
+            getCharacterSerieResponse.endYear,
+            getCharacterSerieResponse.thumbnail.path + "." + getCharacterSerieResponse.thumbnail.extension,
+            storyNames)
     }
 }

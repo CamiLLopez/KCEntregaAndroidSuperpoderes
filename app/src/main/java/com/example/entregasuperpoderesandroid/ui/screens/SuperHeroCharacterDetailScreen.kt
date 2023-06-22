@@ -3,7 +3,9 @@ package com.example.entregasuperpoderesandroid.ui.screens
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -14,14 +16,19 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.sharp.FavoriteBorder
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
@@ -41,6 +48,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -49,8 +57,8 @@ import com.example.entregasuperpoderesandroid.data.model.Comic
 import com.example.entregasuperpoderesandroid.R
 import com.example.entregasuperpoderesandroid.data.model.Serie
 import com.example.entregasuperpoderesandroid.data.model.SuperHeroCharacter
+import com.example.entregasuperpoderesandroid.ui.theme.GreenDiff
 import com.example.entregasuperpoderesandroid.ui.theme.RedWine
-import com.example.entregasuperpoderesandroid.ui.theme.Rose
 import com.example.entregasuperpoderesandroid.ui.viewModels.CharacterDetailViewModel
 
 @Composable
@@ -91,15 +99,15 @@ fun SuperHeroCharacterDetailContent_Preview() {
     SuperHeroCharacterDetailContent(
         SuperHeroCharacter(123, "Capitana Marvel", stringResource(R.string.lorem_impsu), "", true),
         listOf(
-            Serie(123, "Advengers", stringResource(R.string.lorem_impsu), 2010, 2014, ""),
-            Serie(1234, "Advengers", stringResource(R.string.lorem_impsu), 2010, 2014, ""),
-            Serie(12345, "Advengers", stringResource(R.string.lorem_impsu), 2010, 2014, ""),
+            Serie(123, "Advengers", stringResource(R.string.lorem_impsu), 2010, 2014, "", "listOf()"),
+            Serie(1234, "Advengers", stringResource(R.string.lorem_impsu), 2010, 2014, "", "listOf()"),
+            Serie(12345, "Advengers", stringResource(R.string.lorem_impsu), 2010, 2014, "", "listOf()"),
         ),
         listOf(
-            Comic(123, "Un comic title", "Una descripcion", ""),
-            Comic(1234, "Un comic title", "Una descripcion", ""),
-            Comic(1235, "Un comic title", "Una descripcion", ""),
-            Comic(1236, "Un comic title", "Una descripcion", ""),
+            Comic(123, "Un comic title", "Una descripcion", "",""),
+            Comic(1234, "Un comic title", "Una descripcion", "","listOf()"),
+            Comic(1235, "Un comic title", "Una descripcion", "", ""),
+            Comic(1236, "Un comic title", "Una descripcion", "",""),
         ),{_,_ ->})
 }
 
@@ -224,10 +232,10 @@ fun ComicsList(comics: List<Comic>) {
 fun ComicsList_Preview() {
     ComicsList(
         listOf(
-            Comic(123, "Un comic title", "Una descripcion", ""),
-            Comic(1234, "Un comic title", "Una descripcion", ""),
-            Comic(1235, "Un comic title", "Una descripcion", ""),
-            Comic(1236, "Un comic title", "Una descripcion", ""),
+            Comic(123, "Un comic title", "Una descripcion", "", ""),
+            Comic(1234, "Un comic title", "Una descripcion", "",""),
+            Comic(1235, "Un comic title", "Una descripcion", "", ""),
+            Comic(1236, "Un comic title", "Una descripcion", "", ""),
         )
     )
 }
@@ -253,22 +261,23 @@ fun DividerList() {
 @Composable
 fun SeriesList_Preview() {
     SeriesList(listOf(
-        Serie(123, "Advengers", stringResource(R.string.lorem_impsu), 2010, 2014, ""),
-        Serie(1234, "Advengers", stringResource(R.string.lorem_impsu), 2010, 2014, ""),
-        Serie(12345, "Advengers", stringResource(R.string.lorem_impsu), 2010, 2014, ""),
+        Serie(123, "Advengers", stringResource(R.string.lorem_impsu), 2010, 2014, "", "listOf()"),
+        Serie(1234, "Advengers", stringResource(R.string.lorem_impsu), 2010, 2014, "", "listOf()"),
+        Serie(12345, "Advengers", stringResource(R.string.lorem_impsu), 2010, 2014, "", "listOf()"),
     ))
 }
 
 @Composable
 fun ItemList(item: MediaItem) {
 
+    val openDialog = remember { mutableStateOf(false)  }
     val scrollState = rememberScrollState()
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .height(150.dp),
         horizontalArrangement = Arrangement.spacedBy(20.dp),
-        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         AsyncImage(
             model = item.photo,
@@ -281,7 +290,9 @@ fun ItemList(item: MediaItem) {
         Column(
              horizontalAlignment = Alignment.Start,
              verticalArrangement = Arrangement.Center,
-             modifier = Modifier.fillMaxWidth())
+             modifier = Modifier
+                 .fillMaxWidth()
+                 .fillMaxHeight())
         {
              Text(text = item.title,
                  style = MaterialTheme.typography.titleMedium,
@@ -296,16 +307,69 @@ fun ItemList(item: MediaItem) {
                      modifier = Modifier.verticalScroll(scrollState)
                  )
              }
+            Button(
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.LightGray
+                ),
+                shape = ShapeDefaults.Small,
+                contentPadding = PaddingValues(1.dp),
+                modifier = Modifier.padding(3.dp),
+                onClick = {
+                openDialog.value = true
+            }) {
+                Text(
+                    text = stringResource(R.string.detalle_media_item),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = Color.DarkGray
+                )
+            }
         }
+    }
+    if (openDialog.value) {
+        AlertDialog(
+            onDismissRequest = {
+                openDialog.value = false
+            },
+            containerColor = Color.White,
+            titleContentColor = Color.Black,
+            textContentColor = Color.DarkGray,
+            title = {
+                Text(
+                    style = MaterialTheme.typography.headlineSmall,
+                    text = "${item.title},  ${stringResource(R.string.stories)}"
+                )
+            },
+            text = {
+                Text(
+                    style =  MaterialTheme.typography.bodyMedium,
+                    text = item.storyName)
+            },
+            confirmButton = {
+                Button(
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.Transparent
+                    ),
+                    shape = ShapeDefaults.Small,
+                    contentPadding = PaddingValues(1.dp),
+                    modifier = Modifier.padding(3.dp),
+                    onClick = {
+                        openDialog.value = false
+                    }) {
+                    Icon(imageVector = Icons.Filled.Check,
+                        contentDescription = stringResource(R.string.cerrar),
+                        tint = GreenDiff,
+                        modifier = Modifier.size(25.dp))
+                }
+            }
+        )
     }
 }
 
 @Preview(showBackground = true)
 @Composable
 fun ItemList_Preview() {
-    ItemList(Comic(123, "Algo", stringResource(R.string.lorem_impsu), "unafoto"))
+    ItemList(Comic(123, "Algo", stringResource(R.string.lorem_impsu), "unafoto", "listOf()"))
 }
-
 @Composable
 fun FavButton(fav: Boolean, clickFav: () -> Unit) {
 

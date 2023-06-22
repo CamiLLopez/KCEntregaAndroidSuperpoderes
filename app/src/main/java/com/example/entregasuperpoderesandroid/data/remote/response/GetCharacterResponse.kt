@@ -21,3 +21,10 @@ data class Thumbnail(
     @Json(name = "path") val path: String,
     @Json(name = "extension") val extension: String
 )
+data class Stories(
+    @Json(name = "items") val items: List<Items>
+)
+
+data class Items(
+    @Json(name = "name") val name: String
+)

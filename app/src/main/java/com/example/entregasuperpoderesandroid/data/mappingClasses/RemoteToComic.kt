@@ -15,7 +15,12 @@ class RemoteToComic @Inject constructor() {
     }
 
     private fun mapGetComicResponse(getCharacterComicResponse: ResultsComics) : Comic {
+
+        val storyNames = getCharacterComicResponse.stories.items.map { item ->
+            item.name
+        }.toString()
+
         return  Comic(getCharacterComicResponse.id, getCharacterComicResponse.title, getCharacterComicResponse.description,
-            getCharacterComicResponse.thumbnail.path + "." + getCharacterComicResponse.thumbnail.extension)
+            getCharacterComicResponse.thumbnail.path + "." + getCharacterComicResponse.thumbnail.extension, storyNames)
     }
 }
