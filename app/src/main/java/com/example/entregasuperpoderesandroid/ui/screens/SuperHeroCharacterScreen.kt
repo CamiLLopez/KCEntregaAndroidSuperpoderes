@@ -51,7 +51,6 @@ fun SuperHeroCharacterListScreen(viewModel: CharactersViewModel, onCharacterClic
 
     SuperHeroCharacterListScreenContent(state){ hero->
         onCharacterClick(hero.id)
-        viewModel.insertSuperhero(hero)
     }
 }
 

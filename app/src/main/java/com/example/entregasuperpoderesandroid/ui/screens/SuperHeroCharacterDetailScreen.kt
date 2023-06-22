@@ -19,6 +19,7 @@ import androidx.compose.material.icons.sharp.FavoriteBorder
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Tab
@@ -52,7 +53,7 @@ import com.example.entregasuperpoderesandroid.ui.viewModels.CharacterDetailViewM
 
 @Composable
 fun SuperHeroCharacterDetailScreen(viewModel: CharacterDetailViewModel,
-                                   characterID: Int, onFavClicked: (Boolean) -> Unit = {_->}) {
+                                   characterID: Int) {
 
     val hero by viewModel.hero.collectAsState()
     val series by viewModel.series.collectAsState()
@@ -63,50 +64,48 @@ fun SuperHeroCharacterDetailScreen(viewModel: CharacterDetailViewModel,
         viewModel.getComicsByHero(characterID)
         viewModel.getSeriesByHero(characterID)
     }
-    hero?.let { SuperHeroCharacterDetailContent(it, series, comics)}
+    hero?.let { SuperHeroCharacterDetailContent(it, series, comics, onSuperHeroFav = { id, favorite ->
+        viewModel.markFavoriteHero(id, favorite)
+    })
+    }
 }
 @Composable
-fun SuperHeroCharacterDetailContent(hero: SuperHeroCharacter, series: List<Serie>, comics: List<Comic>) {
+fun SuperHeroCharacterDetailContent(hero: SuperHeroCharacter, series: List<Serie>, comics: List<Comic>, onSuperHeroFav: (Int, Boolean) -> (Unit)) {
 
-        GeneralInformationView(hero, series, comics)
+    Column(modifier = Modifier.padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        horizontalAlignment = Alignment.End
+        ) {
+
+        HeadlineComponent(hero,onSuperHeroFav)
+        DescriptionModule(hero.description)
+        TabsForSeriesComics(series, comics)
+    }
 }
 
 @Preview(showBackground = true)
 @Composable
 fun SuperHeroCharacterDetailContent_Preview() {
     SuperHeroCharacterDetailContent(
-        SuperHeroCharacter(123, "Capitana Marvel",
-stringResource(R.string.lorem_impsu), "", true),
-        listOf(Serie(123, "Algo", stringResource(R.string.lorem_impsu), 2020, 2021, "", )),
-        listOf(Comic(23, "Otra cosa", stringResource(R.string.lorem_impsu), "")))
-}
-
-@Composable
-fun GeneralInformationView(hero: SuperHeroCharacter, series: List<Serie>, comics: List<Comic>) {
-
-   Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-
-       HeadlineComponent(hero)
-       FavButton(hero.favorite)
-       hero.description?.let { DescriptionModule(it) }
-       TabsForSeriesComics(series, comics)
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GeneralInformationView_Preview() {
-    GeneralInformationView(
         SuperHeroCharacter(123, "Capitana Marvel", stringResource(R.string.lorem_impsu), "", true),
-        listOf(Serie(123, "Algo", "No", 2020, 2021, "", )),
-        listOf(Comic(23, "Otra cosa", "NO", "")))
+        listOf(
+            Serie(123, "Advengers", stringResource(R.string.lorem_impsu), 2010, 2014, ""),
+            Serie(1234, "Advengers", stringResource(R.string.lorem_impsu), 2010, 2014, ""),
+            Serie(12345, "Advengers", stringResource(R.string.lorem_impsu), 2010, 2014, ""),
+        ),
+        listOf(
+            Comic(123, "Un comic title", "Una descripcion", ""),
+            Comic(1234, "Un comic title", "Una descripcion", ""),
+            Comic(1235, "Un comic title", "Una descripcion", ""),
+            Comic(1236, "Un comic title", "Una descripcion", ""),
+        ),{_,_ ->})
 }
 
 @Composable
-fun HeadlineComponent(hero: SuperHeroCharacter, modifier: Modifier = Modifier) {
+fun HeadlineComponent(hero: SuperHeroCharacter, onSuperHeroFav: (Int, Boolean) -> (Unit)) {
 
     Row(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxWidth()
             .height(150.dp),
         horizontalArrangement = Arrangement.spacedBy(20.dp),
@@ -121,17 +120,32 @@ fun HeadlineComponent(hero: SuperHeroCharacter, modifier: Modifier = Modifier) {
             contentScale = ContentScale.Crop
         )
         Text(text = hero.name,
-            style = MaterialTheme.typography.headlineMedium,
+            style = MaterialTheme.typography.headlineSmall,
             color = Color.DarkGray,
+            maxLines = 2,
             modifier = Modifier.weight(2f)
         )
+        Box(
+            modifier = Modifier.align(Alignment.Bottom)
+        ) {
+            FavButton(hero.favorite) {
+                onSuperHeroFav(hero.id, !hero.favorite)
+            }
+        }
     }
 }
 
 @Preview(showBackground = true)
 @Composable
 fun HeadlineComponent_Preview() {
-    HeadlineComponent(SuperHeroCharacter(123, "Capitana Marvel", stringResource(R.string.lorem_impsu), "", true))
+    HeadlineComponent(
+        SuperHeroCharacter(
+            123,
+            "Capitana Marvel",
+            stringResource(R.string.lorem_impsu),
+            "",
+            true),
+             {_,_ ->})
 }
 
 @Composable
@@ -139,14 +153,18 @@ fun DescriptionModule(heroDescription: String) {
 
     val scrollState = rememberScrollState()
 
-    Box(modifier = Modifier
-        .fillMaxWidth()
-        .height(50.dp)) {
+    if(heroDescription.length>1){
 
-        Text(text = heroDescription,
-            style = MaterialTheme.typography.bodyMedium,
-            color = Color.Black,
-            modifier = Modifier.verticalScroll(scrollState))
+        Box(modifier = Modifier
+            .fillMaxWidth()
+            .height(80.dp)) {
+
+            Text(text = heroDescription,
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color.Black,
+                maxLines = 5,
+                modifier = Modifier.verticalScroll(scrollState))
+        }
     }
 }
 
@@ -163,12 +181,18 @@ fun TabsForSeriesComics(series: List<Serie>, comics: List<Comic>) {
     val titles = listOf("Series", "Comics")
 
     Column {
-        TabRow(selectedTabIndex = state) {
+        TabRow(
+            selectedTabIndex = state) {
             titles.forEachIndexed { index, title ->
                 Tab(
                     selected = state == index,
                     onClick = { state = index },
-                    text = { Text(text = title, maxLines = 2, overflow = TextOverflow.Ellipsis) }
+                    unselectedContentColor = Color.LightGray,
+                    text = {
+                        Text(text = title,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis,
+                            style = MaterialTheme.typography.bodyLarge) }
                 )
             }
         }
@@ -214,7 +238,6 @@ fun SeriesList(series: List<Serie>) {
         }
     }
 }
-
 @Composable
 fun DividerList() {
     Divider(modifier = Modifier,
@@ -257,7 +280,7 @@ fun ItemList(item: MediaItem) {
              modifier = Modifier.fillMaxWidth())
         {
              Text(text = item.title,
-                 style = MaterialTheme.typography.headlineSmall,
+                 style = MaterialTheme.typography.titleMedium,
                  color = Color.Black
              )
              item.description?.let {
@@ -265,6 +288,7 @@ fun ItemList(item: MediaItem) {
                      style =
                      MaterialTheme.typography.bodySmall,
                      color = Color.DarkGray,
+                     maxLines = 6,
                      modifier = Modifier.verticalScroll(scrollState)
                  )
              }
@@ -279,17 +303,17 @@ fun ItemList_Preview() {
 }
 
 @Composable
-fun FavButton(favStatus: Boolean) {
+fun FavButton(fav: Boolean, clickFav: () -> Unit) {
 
     FloatingActionButton(
-        containerColor = Rose,
+        containerColor = Color.Transparent,
         contentColor = RedWine,
+        elevation = FloatingActionButtonDefaults.elevation(1.dp),
         shape = CircleShape,
-        onClick = {
-
-        },
+        onClick = clickFav,
+        modifier = Modifier.size(50.dp)
     ) {
-        if (favStatus){
+        if (fav){
             Icon(Icons.Filled.Favorite, "Favorite Button")
         }else{
             Icon(Icons.Sharp.FavoriteBorder, "No favorite Button")
@@ -300,7 +324,7 @@ fun FavButton(favStatus: Boolean) {
 @Preview
 @Composable
 fun FavButton_Preview() {
-    FavButton(false)
+    FavButton(true, {})
 }
 
 

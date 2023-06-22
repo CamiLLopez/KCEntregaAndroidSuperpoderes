@@ -1,5 +1,6 @@
 package com.example.entregasuperpoderesandroid.data
 
+import android.annotation.SuppressLint
 import android.util.Log
 import com.example.entregasuperpoderesandroid.data.model.Comic
 import com.example.entregasuperpoderesandroid.data.model.Serie
@@ -28,6 +29,7 @@ class RepositoryImpl @Inject constructor(
     private val remoteToComic: RemoteToComic
 ): Repository {
 
+    @SuppressLint("SuspiciousIndentation")
     override suspend fun getHeros(): Flow<List<SuperHeroCharacter>> {
 
       val localHeros = localDataSource.getCharacters().first()
@@ -41,10 +43,11 @@ class RepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getHero(heroID: Int): SuperHeroCharacter {
+    override suspend fun getHero(heroID: Int): Flow<SuperHeroCharacter> {
 
-        val localHero = localDataSource.getCharacter(heroID)
-        return localToSuperHeroCharacter.mapLocalToSuperHeroCharacter(localHero)
+        return  localDataSource.getCharacter(heroID).map { localhero ->
+            localToSuperHeroCharacter.mapLocalToSuperHeroCharacter(localhero)
+        }
     }
 
     override suspend fun getSeriesByHero(heroID: Int): List<Serie> {

@@ -16,7 +16,7 @@ interface ICharacterDao {
     fun getAll(): Flow<List<LocalCharacter>>
 
     @Query("SELECT * FROM character WHERE character.id==:idFragment")
-    suspend fun getCharacterByID(idFragment: Int): LocalCharacter
+    fun getCharacterByID(idFragment: Int): Flow<LocalCharacter>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAllVararg(vararg users: LocalCharacter)

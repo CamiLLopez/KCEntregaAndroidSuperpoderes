@@ -8,7 +8,7 @@ class LocalDataSourceImpl @Inject constructor(private val dao: ICharacterDao): I
     override suspend fun getCharacters(): Flow<List<LocalCharacter>> {
         return dao.getAll()
     }
-    override suspend fun getCharacter(characterID: Int): LocalCharacter {
+    override suspend fun getCharacter(characterID: Int): Flow<LocalCharacter> {
         return dao.getCharacterByID(characterID)
     }
 

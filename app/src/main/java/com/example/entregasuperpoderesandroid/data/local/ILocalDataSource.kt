@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 interface ILocalDataSource {
 
     suspend fun getCharacters(): Flow<List<LocalCharacter>>
-    suspend fun getCharacter(characterID: Int): LocalCharacter
+    suspend fun getCharacter(characterID: Int): Flow<LocalCharacter>
 
     suspend fun updateCharacter(characterID: Int, favorite: Boolean)
 

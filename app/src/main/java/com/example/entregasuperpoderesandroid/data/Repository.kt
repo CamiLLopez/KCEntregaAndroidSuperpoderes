@@ -9,7 +9,7 @@ interface Repository {
 
     suspend fun getHeros(): Flow<List<SuperHeroCharacter>>
 
-    suspend fun getHero(heroID: Int): SuperHeroCharacter
+    suspend fun getHero(heroID: Int): Flow<SuperHeroCharacter>
 
     suspend fun getSeriesByHero(heroID: Int): List<Serie>
 

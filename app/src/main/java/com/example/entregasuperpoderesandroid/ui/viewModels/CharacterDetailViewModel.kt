@@ -49,20 +49,15 @@ class CharacterDetailViewModel @Inject constructor(private val repository: Repos
                 _series.update { result }
             }
         }
-
     }
 
     fun getHeroCharacter(heroID: Int){
         viewModelScope.launch {
-        val result = withContext(Dispatchers.IO){
-            repository.getHero(heroID)
-        }
-        result.let {
-            _hero.update { result }
+            repository.getHero(heroID).collect{ hero ->
+                _hero.update { hero }
+            }
         }
     }
-}
-
     fun markFavoriteHero(heroID: Int, favorite: Boolean){
         viewModelScope.launch {
             val result = withContext(Dispatchers.IO) {
