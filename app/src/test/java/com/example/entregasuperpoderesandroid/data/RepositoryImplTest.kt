@@ -51,7 +51,6 @@ class RepositoryImplTest {
 
         assert(herosFromLocal.isNotEmpty())
     }
-
     @Test
     fun `WHEN getHero by ID (123) failed EXPECTS a NO HERO from localDataSource`() = runTest {
 

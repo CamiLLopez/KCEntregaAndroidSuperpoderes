@@ -12,7 +12,6 @@ class FakeLocalDataSource: ILocalDataSource {
            emit(listOf(LocalCharacter(123, "Test", "Test", "", false)))
        }
     }
-
     override suspend fun getCharacter(characterID: Int): Flow<LocalCharacter> {
         return if (characterID == 123){
             flow {}

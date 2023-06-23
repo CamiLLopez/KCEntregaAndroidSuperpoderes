@@ -48,7 +48,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -80,7 +79,10 @@ fun SuperHeroCharacterDetailScreen(viewModel: CharacterDetailViewModel,
     }
 }
 @Composable
-fun SuperHeroCharacterDetailContent(hero: SuperHeroCharacter, series: List<Serie>, comics: List<Comic>, onSuperHeroFav: (Int, Boolean) -> (Unit)) {
+fun SuperHeroCharacterDetailContent(hero: SuperHeroCharacter,
+                                    series: List<Serie>,
+                                    comics: List<Comic>,
+                                    onSuperHeroFav: (Int, Boolean) -> (Unit)) {
 
     Column(modifier = Modifier.padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),

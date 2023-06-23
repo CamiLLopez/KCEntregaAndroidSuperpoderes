@@ -1,17 +1,12 @@
 package com.example.entregasuperpoderesandroid.ui.viewModels
 
-import android.util.Log
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.entregasuperpoderesandroid.data.Repository
-import com.example.entregasuperpoderesandroid.utils.generateComicList
-import com.google.common.truth.Truth
-import io.mockk.coEvery
-import io.mockk.mockk
+import com.example.entregasuperpoderesandroid.data.fakes.FakeRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.toList
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.newSingleThreadContext
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
@@ -31,36 +26,46 @@ class CharacterDetailViewModelTest {
 
     private lateinit var repository: Repository
 
-    private val fakeMainThread = newSingleThreadContext("UI thread")
 
-
+    @OptIn(ExperimentalCoroutinesApi::class)
     @Before
     fun setUp() {
-        Dispatchers.setMain(fakeMainThread)
-        repository = mockk()
+        Dispatchers.setMain(UnconfinedTestDispatcher())
+        repository = FakeRepository()
         viewModel = CharacterDetailViewModel(repository)
     }
 
     @Test
-    fun `WHEN getComicsByHero EXPECT successful response`() = runTest {
+    fun `WHEN getSeriesByHero EXPECT successful response with a list of Series`() = runTest {
 
-        val valueExpected = generateComicList(16)
-        coEvery { repository.getComicsByHero(123) } returns valueExpected
+        viewModel.getSeriesByHero(123)
+
+        val stateFlow = viewModel.series.first()
+
+        assert(stateFlow.isNotEmpty())
+    }
+
+    @Test
+    fun `WHEN getComicByHero EXPECT successful response with a list of Comics`() = runTest {
+
         viewModel.getComicsByHero(123)
 
         val stateFlow = viewModel.comics.first()
 
-        assert(stateFlow.isEmpty())
+        assertEquals(stateFlow.first().id, 123)
     }
 
     @Test
-    fun `WHEN getSeriesByHero EXPECT successful response`() = runTest {
+    fun `WHEN getHero and id 123 EXPECT successful response with a hero`() = runTest {
+
+        repository.getHero(123)
+        viewModel.getHeroCharacter(123)
+        val stateFlow = viewModel.hero.first()
+
+        assertEquals(123,stateFlow?.id)
     }
 
-    @Test
-    fun `WHEN getHero EXPECT successful response`() = runTest {
-    }
-
+    @OptIn(ExperimentalCoroutinesApi::class)
     @After
     fun tearDown() {
         Dispatchers.resetMain()
