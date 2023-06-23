@@ -192,7 +192,7 @@ fun DescriptionModule_Preview() {
 fun TabsForSeriesComics(series: List<Serie>, comics: List<Comic>) {
 
     var state by remember { mutableStateOf(0) }
-    val titles = listOf(stringResource(R.string.series), stringResource(R.string.series))
+    val titles = listOf(stringResource(R.string.series), stringResource(R.string.comics))
 
     Column {
         TabRow(
